@@ -1,0 +1,1412 @@
+{
+  "address": "8oQ1RkmYfXSFvbvnSAtScoMB1pjXSYQw13QzYspmHXvB",
+  "metadata": {
+    "name": "riptide",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Riptide: a real-time onchain trading arena on MagicBlock Ephemeral Rollups"
+  },
+  "instructions": [
+    {
+      "name": "cash_out",
+      "docs": [
+        "Close any open position at the live price and settle the trader's final",
+        "chips back on Solana (commit + undelegate)."
+      ],
+      "discriminator": [
+        1,
+        110,
+        57,
+        58,
+        159,
+        157,
+        243,
+        192
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "trader"
+          ]
+        },
+        {
+          "name": "market",
+          "relations": [
+            "trader"
+          ]
+        },
+        {
+          "name": "trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_round",
+      "docs": [
+        "Authority may end a round early."
+      ],
+      "discriminator": [
+        149,
+        14,
+        81,
+        88,
+        230,
+        226,
+        234,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "market"
+          ]
+        },
+        {
+          "name": "market",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "commit_market",
+      "docs": [
+        "Snapshot the live market state to Solana without leaving the rollup."
+      ],
+      "discriminator": [
+        155,
+        54,
+        116,
+        248,
+        97,
+        212,
+        7,
+        212
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "consume_tide",
+      "docs": [
+        "VRF callback: the only way the price ever moves."
+      ],
+      "discriminator": [
+        62,
+        148,
+        249,
+        89,
+        104,
+        253,
+        175,
+        76
+      ],
+      "accounts": [
+        {
+          "name": "vrf_program_identity",
+          "docs": [
+            "Scoped VRF identity PDA, bound to this program. Its presence as a signer proves",
+            "the callback was issued by the VRF program for this program."
+          ],
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "randomness",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "_client_seed",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "create_market",
+      "docs": [
+        "Create a new round. Runs on Solana."
+      ],
+      "discriminator": [
+        103,
+        226,
+        97,
+        235,
+        200,
+        188,
+        251,
+        254
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "arg",
+                "path": "round_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "round_id",
+          "type": "u64"
+        },
+        {
+          "name": "max_ticks",
+          "type": "u32"
+        },
+        {
+          "name": "volatility_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "delegate_market",
+      "docs": [
+        "Hand the market account to the Ephemeral Rollup. Runs on Solana.",
+        "Pass the ER validator identity as the first remaining account to pin one."
+      ],
+      "discriminator": [
+        223,
+        125,
+        110,
+        148,
+        99,
+        176,
+        143,
+        72
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "buffer_market",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                115,
+                228,
+                138,
+                74,
+                229,
+                90,
+                94,
+                95,
+                192,
+                57,
+                158,
+                76,
+                111,
+                213,
+                199,
+                107,
+                248,
+                29,
+                84,
+                176,
+                224,
+                14,
+                229,
+                220,
+                114,
+                172,
+                52,
+                98,
+                183,
+                251,
+                4,
+                228
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_market",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_market",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "market",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "arg",
+                "path": "round_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner_program",
+          "address": "8oQ1RkmYfXSFvbvnSAtScoMB1pjXSYQw13QzYspmHXvB"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "round_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "delegate_trader",
+      "docs": [
+        "Hand the trader account to the Ephemeral Rollup. Runs on Solana."
+      ],
+      "discriminator": [
+        3,
+        164,
+        192,
+        106,
+        119,
+        91,
+        122,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market"
+        },
+        {
+          "name": "buffer_trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                115,
+                228,
+                138,
+                74,
+                229,
+                90,
+                94,
+                95,
+                192,
+                57,
+                158,
+                76,
+                111,
+                213,
+                199,
+                107,
+                248,
+                29,
+                84,
+                176,
+                224,
+                14,
+                229,
+                220,
+                114,
+                172,
+                52,
+                98,
+                183,
+                251,
+                4,
+                228
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner_program",
+          "address": "8oQ1RkmYfXSFvbvnSAtScoMB1pjXSYQw13QzYspmHXvB"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "enter",
+      "docs": [
+        "Put a delegated trader on the round's roster so they show on the leaderboard."
+      ],
+      "discriminator": [
+        139,
+        49,
+        209,
+        114,
+        88,
+        91,
+        77,
+        134
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "trader"
+          ]
+        },
+        {
+          "name": "market",
+          "writable": true,
+          "relations": [
+            "trader"
+          ]
+        },
+        {
+          "name": "trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "join_market",
+      "docs": [
+        "Create a trader account for a round, funded with starting chips. Runs on Solana."
+      ],
+      "discriminator": [
+        141,
+        113,
+        87,
+        152,
+        182,
+        213,
+        41,
+        202
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market"
+        },
+        {
+          "name": "trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "liquidate",
+      "docs": [
+        "Permissionless: close a position whose equity has hit zero."
+      ],
+      "discriminator": [
+        223,
+        179,
+        226,
+        125,
+        48,
+        46,
+        39,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "market",
+          "relations": [
+            "trader"
+          ]
+        },
+        {
+          "name": "trader",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "process_undelegation",
+      "discriminator": [
+        196,
+        28,
+        41,
+        206,
+        48,
+        37,
+        51,
+        167
+      ],
+      "accounts": [
+        {
+          "name": "base_account",
+          "writable": true
+        },
+        {
+          "name": "buffer",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  110,
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  101,
+                  45,
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "base_account"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                181,
+                183,
+                0,
+                225,
+                242,
+                87,
+                58,
+                192,
+                204,
+                6,
+                34,
+                1,
+                52,
+                74,
+                207,
+                151,
+                184,
+                53,
+                6,
+                235,
+                140,
+                229,
+                25,
+                152,
+                204,
+                98,
+                126,
+                24,
+                147,
+                128,
+                167,
+                62
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "account_seeds",
+          "type": {
+            "vec": "bytes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "request_tide",
+      "docs": [
+        "Ask the VRF oracle for fresh randomness to move the tide by one tick.",
+        "Permissionless: the keeper calls it on a timer, and anyone else may too."
+      ],
+      "discriminator": [
+        77,
+        205,
+        68,
+        227,
+        143,
+        121,
+        164,
+        24
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "market",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market.authority",
+                "account": "Market"
+              },
+              {
+                "kind": "account",
+                "path": "market.round_id",
+                "account": "Market"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle_queue",
+          "writable": true
+        },
+        {
+          "name": "program_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vrf_program",
+          "address": "Vrf1RNUjXmQGjmQrQLvJHs9SNkvDJEsRVFPkfSQUwGz"
+        },
+        {
+          "name": "slot_hashes",
+          "address": "SysvarS1otHashes111111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "client_seed",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "settle_market",
+      "docs": [
+        "Settle a closed round's market on Solana (commit + undelegate)."
+      ],
+      "discriminator": [
+        193,
+        153,
+        95,
+        216,
+        166,
+        6,
+        144,
+        217
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "market"
+          ]
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "trade",
+      "docs": [
+        "Set the trader's position. `direction` is 1 for long, -1 for short and 0",
+        "to go flat; `notional` is the chip value to open at the current price.",
+        "Any open position is closed (and its PnL realized) first."
+      ],
+      "discriminator": [
+        178,
+        144,
+        26,
+        216,
+        241,
+        187,
+        206,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "trader"
+          ]
+        },
+        {
+          "name": "market",
+          "relations": [
+            "trader"
+          ]
+        },
+        {
+          "name": "trader",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  100,
+                  101,
+                  45,
+                  116,
+                  114,
+                  97,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "direction",
+          "type": "i8"
+        },
+        {
+          "name": "notional",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Market",
+      "discriminator": [
+        219,
+        190,
+        213,
+        55,
+        0,
+        227,
+        198,
+        154
+      ]
+    },
+    {
+      "name": "Trader",
+      "discriminator": [
+        74,
+        133,
+        32,
+        105,
+        47,
+        50,
+        5,
+        238
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidConfig",
+      "msg": "Invalid market configuration"
+    },
+    {
+      "code": 6001,
+      "name": "RoundClosed",
+      "msg": "This round is closed"
+    },
+    {
+      "code": 6002,
+      "name": "RoundStillOpen",
+      "msg": "This round is still open"
+    },
+    {
+      "code": 6003,
+      "name": "RoundFull",
+      "msg": "This round is full"
+    },
+    {
+      "code": 6004,
+      "name": "NotEntered",
+      "msg": "Enter the round before trading"
+    },
+    {
+      "code": 6005,
+      "name": "CashedOut",
+      "msg": "This trader has already cashed out"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidTrade",
+      "msg": "Invalid trade"
+    },
+    {
+      "code": 6007,
+      "name": "OverLeveraged",
+      "msg": "Position exceeds the leverage limit"
+    },
+    {
+      "code": 6008,
+      "name": "NotLiquidatable",
+      "msg": "Position is not liquidatable"
+    },
+    {
+      "code": 6009,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "Market",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "round_id",
+            "type": "u64"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "open_price",
+            "type": "u64"
+          },
+          {
+            "name": "high",
+            "type": "u64"
+          },
+          {
+            "name": "low",
+            "type": "u64"
+          },
+          {
+            "name": "tick",
+            "type": "u32"
+          },
+          {
+            "name": "max_ticks",
+            "type": "u32"
+          },
+          {
+            "name": "volatility_bps",
+            "type": "u16"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "last_wave",
+            "docs": [
+              "1 = up-wave, -1 = down-wave, 0 = calm, for the last tick."
+            ],
+            "type": "i8"
+          },
+          {
+            "name": "waves",
+            "type": "u16"
+          },
+          {
+            "name": "roster_len",
+            "type": "u8"
+          },
+          {
+            "name": "roster",
+            "type": {
+              "array": [
+                "pubkey",
+                32
+              ]
+            }
+          },
+          {
+            "name": "history",
+            "type": {
+              "array": [
+                "u64",
+                64
+              ]
+            }
+          },
+          {
+            "name": "last_randomness",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Trader",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "cash",
+            "docs": [
+              "Chips not tied up in open PnL (6 decimals)."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "size",
+            "docs": [
+              "Signed position quantity (6 decimals): positive long, negative short."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "entry_price",
+            "type": "u64"
+          },
+          {
+            "name": "realized_pnl",
+            "type": "i64"
+          },
+          {
+            "name": "trades",
+            "type": "u32"
+          },
+          {
+            "name": "peak_equity",
+            "type": "i64"
+          },
+          {
+            "name": "entered",
+            "type": "bool"
+          },
+          {
+            "name": "cashed_out",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -14,3 +14,4 @@ demo/audio/
 demo/*.mp3
 __pycache__/
 .DS_Store
+.riptide-round.json
