@@ -52,7 +52,7 @@ async function main() {
     if (inFlight < 2) {
       inFlight++;
       client
-        .requestTide(market, seed++)
+        .requestTide(market, seed++ % 256)
         .catch((e) => console.warn(`request_tide failed: ${e.message}`))
         .finally(() => inFlight--);
     }

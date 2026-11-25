@@ -140,7 +140,7 @@ export interface TraderState {
 const num = (v: BN) => Number(v.toString());
 
 export function decodeMarket(program: Program, address: PublicKey, data: Buffer): MarketState {
-  const m: any = program.coder.accounts.decode("Market", data);
+  const m: any = program.coder.accounts.decode("market", data);
   const tick: number = m.tick;
   const raw: number[] = m.history.map((h: BN) => num(h) / PRICE_SCALE);
   // history[tick % 64] holds the latest price; unroll the ring oldest-first.
@@ -170,7 +170,7 @@ export function decodeMarket(program: Program, address: PublicKey, data: Buffer)
 }
 
 export function decodeTrader(program: Program, address: PublicKey, data: Buffer): TraderState {
-  const t: any = program.coder.accounts.decode("Trader", data);
+  const t: any = program.coder.accounts.decode("trader", data);
   return {
     address,
     owner: t.owner,

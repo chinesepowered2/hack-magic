@@ -23,6 +23,9 @@ export function loadCluster(): Cluster {
     erValidator: process.env.RIPTIDE_ER_VALIDATOR
       ? new PublicKey(process.env.RIPTIDE_ER_VALIDATOR)
       : base.erValidator,
+    oracleQueue: process.env.RIPTIDE_ORACLE_QUEUE
+      ? new PublicKey(process.env.RIPTIDE_ORACLE_QUEUE)
+      : base.oracleQueue,
   };
 }
 
