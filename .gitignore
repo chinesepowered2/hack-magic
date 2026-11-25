@@ -1,0 +1,16 @@
+target/
+node_modules/
+dist/
+.anchor/
+*.log
+.env
+.env.*
+!.env.example
+# deploy keys never leave the machine
+*-keypair.json
+keys/
+# generated voiceover audio
+demo/audio/
+demo/*.mp3
+__pycache__/
+.DS_Store
