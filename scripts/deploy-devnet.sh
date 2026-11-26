@@ -34,7 +34,14 @@ fi
 
 echo "Building the program and IDL"
 npm install --silent
-npm run --silent build:program
+cargo build-sbf --manifest-path programs/riptide/Cargo.toml
+if command -v anchor >/dev/null 2>&1; then
+  anchor idl build -p riptide -o target/idl/riptide.json -t target/types/riptide.ts
+  cp target/idl/riptide.json client/idl/riptide.json
+fi
+# The IDL also carries the program ID as raw bytes (the delegation buffer PDA's
+# seeds::program), which sed cannot reach; sync it in place.
+node scripts/sync-idl-id.mjs "$NEW_ID"
 
 echo "Wallet $(solana-keygen pubkey "$WALLET") has $(solana balance -u "$URL" -k "$WALLET")"
 echo "Deploying $NEW_ID to devnet"

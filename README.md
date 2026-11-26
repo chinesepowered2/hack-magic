@@ -215,7 +215,7 @@ npm run bots -- "" 4             # optional: four demo traders
 npm run dev                      # open the URL it prints, with ?market=<address>
 ```
 
-The app creates a burner key in the browser, so there are no wallet popups. On devnet it can request an airdrop for the one Solana transaction that joining needs; after that, everything is free.
+The app creates a burner key in the browser, so there are no wallet popups. Joining needs one Solana transaction, so fund the burner with devnet SOL from [faucet.solana.com](https://faucet.solana.com/) (the public RPC airdrop endpoint is closed); after that, every trade is free.
 
 Endpoints default to Solana devnet and MagicBlock's Asia devnet rollup (`devnet-as.magicblock.app`). Override them with `RIPTIDE_BASE_RPC`, `RIPTIDE_ER_RPC`, `RIPTIDE_ER_VALIDATOR` and `RIPTIDE_ORACLE_QUEUE` for the CLI, or `VITE_BASE_RPC` and `VITE_ER_RPC` for the app.
 

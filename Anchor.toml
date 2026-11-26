@@ -7,10 +7,10 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-riptide = "8oQ1RkmYfXSFvbvnSAtScoMB1pjXSYQw13QzYspmHXvB"
+riptide = "6ix99CDMjmnRcZut6NkRMCi1D9gV1Y1xXcVNsVD3hjf"
 
 [programs.localnet]
-riptide = "8oQ1RkmYfXSFvbvnSAtScoMB1pjXSYQw13QzYspmHXvB"
+riptide = "6ix99CDMjmnRcZut6NkRMCi1D9gV1Y1xXcVNsVD3hjf"
 
 [provider]
 cluster = "devnet"

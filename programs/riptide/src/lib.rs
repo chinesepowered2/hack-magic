@@ -25,7 +25,7 @@ use ephemeral_rollups_sdk::{
 
 pub mod tide;
 
-declare_id!("8oQ1RkmYfXSFvbvnSAtScoMB1pjXSYQw13QzYspmHXvB");
+declare_id!("6ix99CDMjmnRcZut6NkRMCi1D9gV1Y1xXcVNsVD3hjf");
 
 pub const MARKET_SEED: &[u8] = b"riptide-market";
 pub const TRADER_SEED: &[u8] = b"riptide-trader";
